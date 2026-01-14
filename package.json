@@ -23,8 +23,8 @@
     "typescript": "^5"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
-      "eslint --fix"
+    "packages/client/*.{ts,tsx,js,jsx}": [
+      "bun --cwd packages/client eslint --fix"
     ]
   }
 }
