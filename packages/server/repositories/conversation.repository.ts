@@ -1,26 +1,29 @@
-// Implementation detail (private)
-// In-memory storage for conversations
-const conversations = new Map<string, string>();
+interface SessionData {
+  lastResponseId?: string;
+  context?: string;
+}
 
-// before refactoring
-// export function getLastResponseId(conversationId: string): string | undefined {
-//   return conversations.get(conversationId);
-// }
+const sessions = new Map<string, SessionData>();
 
-// export function setLastResponseId(
-//   conversationId: string,
-//   responseId: string
-// ): void {
-//   conversations.set(conversationId, responseId);
-// }
-
-// after refactor encapsulate in object
 export const conversationRepository = {
-  getLastResponseId(conversationId: string): string | undefined {
-    return conversations.get(conversationId);
+  setContext(conversationId: string, context: string): void {
+    const currentSession = sessions.get(conversationId) || {};
+    sessions.set(conversationId, { ...currentSession, context });
+  },
+
+  getContext(conversationId: string): string | undefined {
+    return sessions.get(conversationId)?.context;
   },
 
   setLastResponseId(conversationId: string, responseId: string): void {
-    conversations.set(conversationId, responseId);
+    const currentSession = sessions.get(conversationId) || {};
+    sessions.set(conversationId, {
+      ...currentSession,
+      lastResponseId: responseId,
+    });
+  },
+
+  getLastResponseId(conversationId: string): string | undefined {
+    return sessions.get(conversationId)?.lastResponseId;
   },
 };
